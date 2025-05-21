@@ -1,0 +1,151 @@
+version: '3'
+
+services:
+  # Database service
+  database:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: Avenues1
+      MYSQL_DATABASE: lead_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./Database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - lead-network
+    container_name: lead-database
+
+  # Frontend site (Site project)
+  site-frontend:
+    build:
+      context: ./Site
+      dockerfile: Dockerfile
+    ports:
+      - "5050:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=server=database;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
+      - OPENAI_API_KEY=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
+    depends_on:
+      - database
+    networks:
+      - lead-network
+    container_name: lead-site-frontend
+
+  # Database Site
+  database-site:
+    build:
+      context: ./DatabaseSite
+      dockerfile: Dockerfile
+    ports:
+      - "5051:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=server=database;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
+      - OPENAI_API_KEY=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
+    depends_on:
+      - database
+    networks:
+      - lead-network
+    container_name: lead-database-site
+
+  # Intermediary service
+  intermediary:
+    build:
+      context: ./Logic/Intermediary
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    environment:
+      - DB_HOST=database
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=lead_db
+      - FACEBOOK_API_URL=http://host.docker.internal:5001
+    depends_on:
+      - database
+      - scheduler
+    networks:
+      - lead-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    container_name: lead-intermediary
+
+  # Scheduler service
+  scheduler:
+    build:
+      context: ./Logic/Scheduler
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_HOST=database
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=lead_db
+      - PORT=3001
+      - OPENAI_API_KEY=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
+    depends_on:
+      - database
+      - messenger
+    networks:
+      - lead-network
+    container_name: lead-scheduler
+
+  # Calendar service
+  calendar:
+    build:
+      context: ./Logic/Calendar
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - GOOGLE_PROJECT_ID=sound-coil-455613-q9
+      - GOOGLE_PRIVATE_KEY_ID=${GOOGLE_PRIVATE_KEY_ID}
+      - GOOGLE_PRIVATE_KEY=${GOOGLE_PRIVATE_KEY}
+      - GOOGLE_CLIENT_EMAIL=customers-booking-account@sound-coil-455613-q9.iam.gserviceaccount.com
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_CERT_URL=${GOOGLE_CLIENT_CERT_URL}
+      - CALENDAR_ID=${CALENDAR_ID}
+    depends_on:
+      - database
+    networks:
+      - lead-network
+    container_name: lead-calendar
+
+  # Messenger service
+  messenger:
+    build:
+      context: ./Logic/Messaging
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=database
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=lead_db
+      - PORT=3000
+      - TWILIO_ACCOUNT_SID=ACaf72e29a13e9e2a9d92403d1484969c8
+      - TWILIO_AUTH_TOKEN=9e3e4c4959e312b08e913ad7491d0160
+      - TWILIO_PHONE_NUMBER=+12096712613
+      - OPENAI_API_KEY=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
+    depends_on:
+      - database
+    networks:
+      - lead-network
+    container_name: lead-messenger
+
+networks:
+  lead-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

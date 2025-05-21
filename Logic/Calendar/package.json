@@ -1,0 +1,16 @@
+{
+    "name": "calendar-service",
+    "version": "1.0.0",
+    "description": "Service for integrating with Google Calendar",
+    "main": "CalendarService.js",
+    "scripts": {
+      "start": "node CalendarService.js"
+    },
+    "dependencies": {
+      "express": "^4.21.2",
+      "body-parser": "^1.20.3",
+      "googleapis": "^128.0.0",
+      "moment": "^2.29.4",
+      "dotenv": "^16.3.1"
+    }
+  }

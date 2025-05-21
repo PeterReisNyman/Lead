@@ -1,0 +1,60 @@
+@model UserDataSite.Models.UserDataViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>User Details - @Model.Phone</title>
+    <style>
+        body { font-family: sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-item { }
+        .messages { margin-top: 30px; }
+        .message { padding: 10px; border-radius: 4px; margin-bottom: 10px; max-width: 60%; }
+        .sent { background: #d1e7dd; margin-left: auto; }
+        .received { background: #f8d7da; margin-right: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>@Model.FirstName @Model.LastName (@Model.Phone)</h1>
+            <p>@Model.Address</p>
+        </div>
+        <div class="grid">
+            <div class="grid-item"><strong>Lead State:</strong> @Model.LeadState</div>
+            <div class="grid-item"><strong>Home Type:</strong> @Model.HomeType</div>
+            <div class="grid-item"><strong>Home Built:</strong> @Model.HomeBuilt</div>
+            <div class="grid-item"><strong>Home Worth:</strong> @Model.HomeWorth</div>
+            <div class="grid-item"><strong>Sell Time:</strong> @Model.SellTime</div>
+            <div class="grid-item"><strong>Home Condition:</strong> @Model.HomeCondition</div>
+            <div class="grid-item"><strong>Working With Agent:</strong> @Model.WorkingWithAgent</div>
+            <div class="grid-item"><strong>Looking To Buy:</strong> @Model.LookingToBuy</div>
+            <div class="grid-item"><strong>Ad ID:</strong> @Model.AdId</div>
+            <div class="grid-item"><strong>Tracking Parameters:</strong> @Model.TrackingParameters</div>
+        </div>
+        <div class="messages">
+            <h2>Message History</h2>
+            @if (Model.Messages != null && Model.Messages.Count > 0)
+            {
+                foreach (var msg in Model.Messages)
+                {
+                    var cssClass = msg.Direction == "outbound" ? "sent" : "received";
+                    <div class="message @cssClass">
+                        <small>@msg.Timestamp</small><br />
+                        @msg.Text
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No messages exchanged yet.</p>
+            }
+        </div>
+    </div>
+</body>
+</html>

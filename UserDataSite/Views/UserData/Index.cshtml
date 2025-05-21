@@ -1,0 +1,41 @@
+@{
+    Layout = null;
+    var phone = ViewBag.Phone as string ?? "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Access User Data - @phone</title>
+    <style>
+        body { font-family: sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn { background: #5624d0; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        .error { color: #d63031; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Access User Data</h1>
+        <p>Phone: <strong>@phone</strong></p>
+        <form method="post" action="generate">
+            <input type="hidden" name="phone" value="@phone" />
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" required />
+            </div>
+            <button type="submit" class="btn">Generate</button>
+        </form>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="error">
+                @Html.ValidationSummary()
+            </div>
+        }
+    </div>
+</body>
+</html>

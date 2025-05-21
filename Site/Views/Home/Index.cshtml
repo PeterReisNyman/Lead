@@ -1,0 +1,233 @@
+@model Site.Controllers.RealtorViewModel
+@{
+    // Turn off the default layout
+    Layout = null;
+    
+    // Use default name if no model is provided (for default route)
+    var realtorName = Model?.Name ?? "Your Realtor";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Your Consultation</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Additional styles for video control */
+        .video-container video {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .debug-panel {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            color: #333;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Thank you for filling out the survey</h1>
+            <h2>IMPORTANT!</h2>
+            <p>PLEASE WATCH THIS SHORT 1 MINUTE</p>
+        </header>
+
+    <div class="video-container" id="video-container">
+        @if (Model != null && !string.IsNullOrEmpty(Model.VideoPath))
+        {
+            <div class="vimeo-wrapper rounded-lg overflow-hidden">
+                @{
+                    var videoHtml = Model.VideoPath;
+                    string iframeOnlyHtml = videoHtml; // Default to original
+
+                    // Try to extract only the iframe if it's wrapped
+                    if (videoHtml.StartsWith("<div") && videoHtml.Contains("<iframe"))
+                    {
+                        int iframeStart = videoHtml.IndexOf("<iframe");
+                        int iframeEnd = videoHtml.IndexOf("</iframe>");
+                        if (iframeStart >= 0 && iframeEnd > iframeStart)
+                        {
+                            iframeOnlyHtml = videoHtml.Substring(iframeStart, iframeEnd - iframeStart + 9); // +9 for "</iframe>"
+                            // Ensure the iframe fills its container (might be redundant if iframe style already does this)
+                            if (!iframeOnlyHtml.Contains("width:100%") || !iframeOnlyHtml.Contains("height:100%")) {
+                                iframeOnlyHtml = iframeOnlyHtml.Replace("<iframe ", "<iframe style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" ");
+                            }
+                            // Add allow autoplay
+                            if (!iframeOnlyHtml.Contains("allow=\"autoplay")) {
+                                iframeOnlyHtml = iframeOnlyHtml.Replace("<iframe ", "<iframe allow=\"autoplay; fullscreen; picture-in-picture\" ");
+                            }
+                        }
+                    }
+                    // Add autoplay params directly to src if needed (might be handled by 'allow' attribute now)
+                    if (iframeOnlyHtml.Contains("player.vimeo.com") && !iframeOnlyHtml.Contains("autoplay=1")) {
+                        iframeOnlyHtml = iframeOnlyHtml.Replace("?", "?autoplay=1&muted=0&").Replace("&amp;", "&");
+                    }
+
+                    // Render the extracted/modified iframe
+                    @Html.Raw(iframeOnlyHtml)
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Video placeholder with debug info -->
+            <div class="debug-panel">
+                <p>Video debugging information:</p>
+                <p>Model is @(Model == null ? "null" : "not null")</p>
+                <p>VideoPath is @(Model?.VideoPath == null ? "null" : "'" + Model.VideoPath + "'")</p>
+            </div>
+            <div class="video-placeholder">
+                <div class="play-button">▶</div>
+            </div>
+        }
+    </div>
+
+
+
+        <div class="contact-info">
+            <p>MY TEAM WILL BE IN CONTACT SHORTLY</p>
+            <p class="alternative">OR Skip the line and schedule directly in with me</p>
+        </div>
+
+
+        <section class="calendar-section">
+            <h3>Calendar</h3>
+            <div id="calendar-container">
+                <!-- We'll replace the JavaScript-based calendar with our React component -->
+                <div id="appointment-calendar-root"></div>
+            </div>
+        </section>
+
+        
+        <section class="testimonials-section">
+            <h3>Customer Testimonials</h3>
+            <div class="testimonials-container">
+                <!-- Testimonials will be inserted here via JavaScript -->
+            </div>
+        </section>
+
+        @* <p class="alternative">OR Skip the line and schedule a call with me NOW</p> *@
+
+        @if (!string.IsNullOrEmpty(Model?.WebsiteUrl))
+        {
+            <div class="cta-button">
+                <a href="@Model.WebsiteUrl" class="cta">Visit My Website!</a>
+            </div>
+        }
+    </div>
+
+    <!-- React and React DOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- SignalR client -->
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    
+    <!-- Our calendar component -->
+    <script src="~/js/calendar.js"></script>
+    
+    <!-- Video scroll control script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('realtor-video');
+            if (!video) {
+                console.log('Video element not found');
+                return;
+            }
+            
+            console.log('Video element found:', video);
+            console.log('Video source:', video.querySelector('source').src);
+            
+            // Make sure video is set to loop
+            video.loop = true;
+            
+            // Unmute after a small delay (to get past browser autoplay restrictions)
+            setTimeout(() => {
+                console.log('Unmuting video');
+                video.muted = false;
+            }, 1000);
+            
+            // Function to adjust volume based on scroll position
+            function adjustVolumeOnScroll() {
+                if (!video) return;
+                
+                const videoContainer = document.getElementById('video-container');
+                const rect = videoContainer.getBoundingClientRect();
+                const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                
+                // When video is fully visible at top of viewport - full sound
+                // When video is completely scrolled off (top of viewport below bottom of video) - no sound
+                let visibility = 0;
+                
+                // Video is at least partially visible
+                if (rect.bottom > 0 && rect.top < windowHeight) {
+                    // Linear decrease in volume as user scrolls
+                    // When top of screen = bottom of video, volume = 0
+                    // When bottom of video is at top of viewport or higher, visibility = 0
+                    const videoBottom = rect.bottom;
+                    
+                    if (videoBottom <= 0) {
+                        visibility = 0;
+                    } else if (videoBottom > windowHeight) {
+                        visibility = 1; // Fully visible
+                    } else {
+                        visibility = videoBottom / windowHeight;
+                    }
+                    
+                    console.log('Video visibility:', Math.round(visibility * 100) + '%');
+                    
+                    // Pause when completely out of view, play when in view
+                    if (visibility <= 0 && !video.paused) {
+                        console.log('Pausing video - out of view');
+                        video.pause();
+                    } else if (visibility > 0 && video.paused) {
+                        // Try to play if it was paused due to scrolling
+                        if (!video.hasAttribute('user-paused')) {
+                            console.log('Playing video - in view');
+                            video.play().catch(e => console.error('Error playing video:', e));
+                        }
+                    }
+                }
+                
+                // Set volume based on visibility (0 to 1)
+                video.volume = Math.max(0, Math.min(1, visibility));
+                console.log('Volume set to:', Math.round(video.volume * 100) + '%');
+            }
+            
+            // Mark user-initiated pauses
+            video.addEventListener('pause', function() {
+                // Check if this was likely from user action
+                if (document.visibilityState === 'visible') {
+                    video.setAttribute('user-paused', 'true');
+                    console.log('User paused video');
+                }
+            });
+            
+            video.addEventListener('play', function() {
+                // User manually played, remove flag
+                video.removeAttribute('user-paused');
+                console.log('Video playing');
+            });
+            
+            // Add scroll event listener to adjust volume
+            window.addEventListener('scroll', adjustVolumeOnScroll, { passive: true });
+            
+            // Initialize on load
+            adjustVolumeOnScroll();
+        });
+    </script>
+    
+    <!-- Legacy scripts -->
+    <script src="~/js/site.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Database";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5624d0;
+            --secondary-color: #ffc47e;
+            --dark-color: #2a2a2a;
+            --light-color: #ffffff;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
+        .generator-form {
+            background-color: var(--light-color);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: #4a1fb8;
+        }
+        
+        .result-container {
+            display: none;
+            background-color: var(--light-color);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+        }
+        
+        .result-container h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @@keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* SQL Results Styling */
+        .sql-segment {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .sql-text {
+            white-space: pre-line;
+        }
+        
+        .sql-result {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sql-result thead th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        .sql-result tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+        
+        .sql-result tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+        
+        .sql-result tbody tr:last-of-type {
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .sql-result tbody td {
+            padding: 12px 15px;
+        }
+        
+        .sql-error {
+            background-color: #ffecec;
+            color: #d63031;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid #d63031;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>AI Table Generator</h1>
+            <p>Enter your database credentials and prompt to generate tables</p>
+        </header>
+        
+        <div class="generator-form">
+            <div class="form-group">
+                <label for="username">Database Username</label>
+                <input type="text" id="username" placeholder="Enter MySQL username" value="user">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Database Password</label>
+                <input type="password" id="password" placeholder="Enter MySQL password" value="password">
+            </div>
+            
+            <div class="form-group">
+                <label for="prompt">Your SQL Prompt</label>
+                <textarea id="prompt" placeholder="Example: Show me all leads from realtor with id 3"></textarea>
+            </div>
+            
+            <button id="generate-btn" class="btn">Generate</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Generating response...</p>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <h2>Generated Result</h2>
+            <div id="result-content"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generate-btn');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const promptInput = document.getElementById('prompt');
+            const loadingElement = document.getElementById('loading');
+            const resultContainer = document.getElementById('result-container');
+            const resultContent = document.getElementById('result-content');
+            
+            generateBtn.addEventListener('click', async function() {
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+                const prompt = promptInput.value.trim();
+
+                // Debug: Log the input values to the console.
+                console.log('Debug - Username:', username);
+                console.log('Debug - Password:', password);
+                console.log('Debug - Prompt:', prompt);
+
+                
+                if (!username || !password || !prompt) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Show loading indicator
+                loadingElement.style.display = 'block';
+                resultContainer.style.display = 'none';
+                resultContent.innerHTML = '';
+                
+                try {
+                    const response = await fetch('generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username, password, prompt })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        displayResults(data.result);
+                    } else {
+                        displayError(data.error || 'An error occurred while generating the response');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    displayError('Failed to communicate with the server: ' + error.message);
+                } finally {
+                    // Hide loading indicator
+                    loadingElement.style.display = 'none';
+                    resultContainer.style.display = 'block';
+                }
+            });
+            
+            function displayResults(results) {
+                resultContent.innerHTML = '';
+                
+                if (!results || !results.length) {
+                    resultContent.innerHTML = '<p>No results generated</p>';
+                    return;
+                }
+                
+                results.forEach(segment => {
+                    const segmentDiv = document.createElement('div');
+                    segmentDiv.className = 'sql-segment';
+                    
+                    if (segment.type === 'text') {
+                        // Process markdown for text segments
+                        segmentDiv.className += ' sql-text';
+                        segmentDiv.innerHTML = processMarkdown(segment.content);
+                    } else if (segment.type === 'table') {
+                        segmentDiv.innerHTML = segment.content;
+                    } else if (segment.type === 'error') {
+                        segmentDiv.className += ' sql-error';
+                        segmentDiv.textContent = segment.content;
+                    }
+                    
+                    resultContent.appendChild(segmentDiv);
+                });
+                
+                // Scroll to results
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            function displayError(errorMessage) {
+                resultContent.innerHTML = `<div class="sql-error">${errorMessage}</div>`;
+            }
+            
+            // Simple markdown processor (for code blocks and basic formatting)
+            function processMarkdown(text) {
+                // Remove SQL code blocks (we'll handle them separately)
+                let processed = text.replace(/```sql[\s\S]*?```/gi, '');
+                
+                // Replace other code blocks
+                processed = processed.replace(/```(\w+)?\s*([\s\S]*?)\s*```/g, '<pre><code>$2</code></pre>');
+                
+                // Replace inline code
+                processed = processed.replace(/`([^`]+)`/g, '<code>$1</code>');
+                
+                // Replace headers
+                processed = processed.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+                processed = processed.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+                processed = processed.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+                
+                // Replace bold
+                processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                // Replace italic
+                processed = processed.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                
+                // Replace lists
+                processed = processed.replace(/^\s*[\-\*]\s+(.*)/gm, '<li>$1</li>');
+                
+                // Wrap paragraphs
+                processed = processed.split('\n\n').map(para => {
+                    if (!para.trim().startsWith('<') && para.trim() !== '') {
+                        return `<p>${para}</p>`;
+                    }
+                    return para;
+                }).join('\n');
+                
+                return processed;
+            }
+        });
+    </script>
+</body>
+</html>

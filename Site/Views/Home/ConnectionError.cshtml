@@ -1,0 +1,112 @@
+@{
+    Layout = null;
+    var realtorUuid = ViewBag.RealtorUuid;
+    var refreshSeconds = 5;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connecting to Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Auto-refresh meta tag -->
+    <meta http-equiv="refresh" content="@refreshSeconds;url=/@realtorUuid">
+    <style>
+        :root {
+            --primary-color: #5624d0;
+            --secondary-color: #ffc47e;
+            --dark-color: #1a1a1a;
+            --light-color: #ffffff;
+            --border-radius: 16px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--light-color);
+            background-color: var(--dark-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .message {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--secondary-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .countdown {
+            font-size: 18px;
+            color: var(--secondary-color);
+            margin-top: 20px;
+        }
+        
+        @@keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Connecting to Database</h1>
+        </header>
+        
+        <div class="message">
+            <p>@(ViewBag.ErrorMessage ?? "We're having trouble connecting to our database. The system will automatically retry.")</p>
+        </div>
+        
+        <div class="spinner"></div>
+        
+        <div class="countdown">
+            Retrying in <span id="counter">@refreshSeconds</span> seconds...
+        </div>
+    </div>
+    
+    <script>
+        // Countdown timer
+        let counter = @refreshSeconds;
+        const interval = setInterval(() => {
+            counter--;
+            document.getElementById('counter').textContent = counter;
+            if (counter <= 0) clearInterval(interval);
+        }, 1000);
+    </script>
+</body>
+</html>

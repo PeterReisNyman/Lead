@@ -1,0 +1,292 @@
+:root {
+  --primary-color: #5624d0;
+  --secondary-color: #ffc47e;
+  --dark-color: #1a1a1a;
+  --light-color: #ffffff;
+  --border-radius: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--light-color);
+  /* background-color: #f5f5f5; Remove overall background if video covers everything initially */
+  background-color: var(--dark-color); /* Set default background */
+  margin: 0; /* Ensure no body margin */
+}
+
+
+.container {
+  /* max-width: 480px; */ /* REMOVED - Allow full width */
+  margin: 0 auto;
+  background-color: var(--dark-color);
+  min-height: 100vh;
+  /* padding: 20px; */ /* REMOVED - Padding handled by content-wrapper now */
+  padding: 0; /* Ensure no padding */
+}
+
+.content-wrapper {
+  max-width: 480px; /* Restore max width for content */
+  margin: 0 auto; /* Center content */
+  padding: 20px; /* Restore padding for content */
+  background-color: var(--dark-color); /* Ensure content area has background */
+  position: relative; /* Keep content flow */
+  z-index: 1; /* Ensure content is above default background */
+}
+
+.header {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.header h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.header h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.header p {
+  font-size: 16px;
+  color: #a8c7ff;
+}
+
+.vimeo-wrapper {
+  width: 100%;
+  height: 100%;
+  padding: 0 !important; /* Important to override inline style */
+  position: relative; /* Ensure it fills video-container */
+  background-color: transparent; /* Make wrapper transparent */
+}
+
+.vimeo-wrapper iframe {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   border: 0; /* Remove border */
+}
+
+
+
+/* Ensure video container takes full width */
+.video-container {
+  width: 100%; /* Full width */
+  height: 100vh; /* Full viewport height */
+  position: relative; /* Changed from static if needed */
+  overflow: hidden; /* Prevent scrollbars from iframe */
+  background-color: #000; /* Background while loading */
+  padding: 0 !important; /* Override any padding */
+}
+
+
+
+/* Responsive adjustment for larger screens */
+@media (max-width: 360px) {
+  .vimeo-wrapper {
+    padding-bottom: 75%; /* Slightly adjusted ratio for very small screens */
+  }
+}
+
+/* Debug panel styling */
+.debug-panel {
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  color: #333;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+
+.video-placeholder {
+  background-color: #5624d0;
+  width: 100%;
+  height: 100vh; /* Full height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.play-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.contact-info {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.alternative {
+  font-size: 14px;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.testimonials-section, .calendar-section {
+  margin: 25px 0;
+}
+
+.testimonials-section h3, .calendar-section h3 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.testimonials-container {
+  background-color: var(--light-color);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.testimonials-container::-webkit-scrollbar {
+  display: none;
+}
+
+.testimonial-card {
+  display: inline-block;
+  width: 260px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 12px;
+  margin-right: 15px;
+  white-space: normal;
+}
+
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.testimonial-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: #e0e0e0;
+}
+
+.testimonial-rating {
+  color: #ffb400;
+}
+
+.testimonial-text {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+}
+
+#calendar-container {
+  background-color: var(--light-color);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  color: #333;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.calendar-day {
+  text-align: center;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.calendar-day:hover {
+  background-color: #f0f0f0;
+}
+
+.calendar-day.available {
+  background-color: #e8f5e9;
+}
+
+.calendar-day.selected {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.calendar-day.unavailable {
+  color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.time-slot-container {
+  margin-top: 15px;
+  display: none;
+}
+
+.time-slot {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 5px;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.time-slot.selected {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.cta-button {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.cta {
+  display: inline-block;
+  background-color: var(--secondary-color);
+  color: #333;
+  font-weight: 600;
+  padding: 15px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}

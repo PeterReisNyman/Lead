@@ -1,0 +1,10 @@
+[mysqld]
+# Reduce buffer pool significantly for low RAM (e.g., 1GB-2GB server)
+innodb_buffer_pool_size = 128M
+# Reduce other buffers (adjust based on monitoring)
+key_buffer_size = 16M
+sort_buffer_size = 256K
+read_buffer_size = 256K
+join_buffer_size = 256K
+# Optional: Disable performance schema if not needed for diagnostics
+performance_schema = OFF

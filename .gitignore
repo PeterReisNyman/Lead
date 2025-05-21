@@ -1,0 +1,61 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# trunk tool (metadata)
+.trunk/
+
+# Visual Studio / VS Code
+.vscode/
+*.code-workspace
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# .NET build outputs
+bin/
+obj/
+out/
+publish/
+
+# Debug / Release folders
+**/Debug/
+**/Release/
+
+# NuGet
+*.nupkg
+# (if you restore to a local cache)
+packages/
+
+# Rider / JetBrains
+.idea/
+*.iml
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+env/
+.env
+
+# Node.js (if you ever have JS/TS)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Docker
+docker-compose.override.yml
+*.local.env
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+*.pid
+
+# Coverage
+coverage/
+*.lcov
