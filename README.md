@@ -42,6 +42,18 @@ The `docker-deploy.sh` script demonstrates how to build and push images and depl
 
 The MySQL schema is located in `Database/schema.sql`. When the database container is started, this file is loaded automatically to create tables such as `Realtor`, `Leads`, `Booked`, `Messages`, and `scheduled_messages`.
 
+For Supabase or any PostgreSQL database a translated schema is provided in `Database/postgres.sql`. You can load it with the Supabase CLI or `psql` (the helper script `scripts/load_supabase.sh` automates these commands):
+
+```bash
+psql "$SUPABASE_DB_URL" -f Database/postgres.sql
+psql "$SUPABASE_DB_URL" -f Database/seed.sql   # optional sample data
+```
+Or simply run:
+
+```bash
+./scripts/load_supabase.sh
+```
+
 ## Services Overview
 
 ### ASP.NET Core Sites
