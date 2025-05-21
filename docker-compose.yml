@@ -10,6 +10,9 @@ services:
       MYSQL_DATABASE: lead_db
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
     ports:
       - "3306:3306"
     volumes:
@@ -31,6 +34,9 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=server=database;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
       - OPENAI_API_KEY=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
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - database
     networks:
@@ -49,6 +55,9 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=server=database;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
       - OPENAI_API_KEY=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
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - database
     networks:
@@ -68,6 +77,9 @@ services:
       - DB_PASSWORD=password
       - DB_NAME=lead_db
       - FACEBOOK_API_URL=http://host.docker.internal:5001
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - database
       - scheduler
@@ -91,6 +103,9 @@ services:
       - DB_NAME=lead_db
       - PORT=3001
       - OPENAI_API_KEY=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
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - database
       - messenger
@@ -114,6 +129,9 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_CERT_URL=${GOOGLE_CLIENT_CERT_URL}
       - CALENDAR_ID=${CALENDAR_ID}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - database
     networks:
@@ -137,6 +155,9 @@ services:
       - TWILIO_AUTH_TOKEN=9e3e4c4959e312b08e913ad7491d0160
       - TWILIO_PHONE_NUMBER=+12096712613
       - OPENAI_API_KEY=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
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - database
     networks:

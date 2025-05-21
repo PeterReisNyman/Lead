@@ -21,8 +21,9 @@ This repository contains a collection of services for processing lead data, sche
 ## Running Locally
 
 1. Clone the repository.
-2. Review `docker-compose.yml` and set any environment variables required by your services (database credentials, Twilio keys, OpenAI key, Google calendar credentials, etc.).
-3. Start the stack:
+2. Copy `.env.example` to `.env` and fill in your Supabase credentials (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`).
+3. Review `docker-compose.yml` and set any other environment variables required by your services (database credentials, Twilio keys, OpenAI key, Google calendar credentials, etc.).
+4. Start the stack:
 
    ```bash
    docker-compose up --build
@@ -59,7 +60,7 @@ The MySQL schema is located in `Database/schema.sql`. When the database containe
 
 ## Customization
 
-Environment variables control connections to MySQL, Twilio, OpenAI and Google APIs. Update them in `docker-compose.yml` or supply a `.env` file before starting the containers.
+Environment variables control connections to MySQL, Twilio, OpenAI, Google APIs and Supabase. The stack expects `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` to be set. Update them in `docker-compose.yml` or supply a `.env` file before starting the containers.
 
 ## License
 
