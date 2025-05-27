@@ -11,7 +11,3 @@ SUPABASE_DB_URL=postgres://user:pass@host/db ./scripts/load_supabase.sh
 ```
 
 ## Other scripts
-
-- `docker-deploy.sh` – builds container images, pushes them to a registry and creates a temporary `docker-compose` file for deployment on a server.
-- `export-project.sh` – helper for macOS that exports all project files to a temporary location and copies them to the clipboard.
-
