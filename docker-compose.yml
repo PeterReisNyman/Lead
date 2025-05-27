@@ -6,10 +6,10 @@ services:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: Avenues1
-      MYSQL_DATABASE: lead_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       SUPABASE_URL: ${SUPABASE_URL}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
@@ -32,8 +32,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=server=database;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
-      - OPENAI_API_KEY=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
+      - ConnectionStrings__DefaultConnection=server=database;port=3306;database=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};AllowZeroDateTime=True;ConvertZeroDateTime=True
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
@@ -53,8 +53,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=server=database;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
-      - OPENAI_API_KEY=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
+      - ConnectionStrings__DefaultConnection=server=database;port=3306;database=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};AllowZeroDateTime=True;ConvertZeroDateTime=True
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
@@ -73,9 +73,9 @@ services:
       - "5002:5002"
     environment:
       - DB_HOST=database
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=lead_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
       - FACEBOOK_API_URL=http://host.docker.internal:5001
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
@@ -98,11 +98,11 @@ services:
       - "3001:3001"
     environment:
       - DB_HOST=database
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=lead_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
       - PORT=3001
-      - OPENAI_API_KEY=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
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
@@ -147,14 +147,14 @@ services:
       - "3000:3000"
     environment:
       - DB_HOST=database
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=lead_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
       - PORT=3000
-      - TWILIO_ACCOUNT_SID=ACaf72e29a13e9e2a9d92403d1484969c8
-      - TWILIO_AUTH_TOKEN=9e3e4c4959e312b08e913ad7491d0160
-      - TWILIO_PHONE_NUMBER=+12096712613
-      - OPENAI_API_KEY=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
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}

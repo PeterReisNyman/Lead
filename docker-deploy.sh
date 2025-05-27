@@ -2,12 +2,12 @@
 set -euo pipefail  # abort on errors, undefined vars, and fail on pipe errors
 
 # Configuration
-SERVER_IP="142.93.178.215"  # Updated to your new droplet IP
-SERVER_USER="root"
-SERVER_PASSWORD="Piriquito20!Extra"
-SERVER_PORT="22"
+SERVER_IP="${SERVER_IP}"
+SERVER_USER="${SERVER_USER:-root}"
+SERVER_PASSWORD="${SERVER_PASSWORD}"
+SERVER_PORT="${SERVER_PORT:-22}"
 LOCAL_DIR="$(pwd)"
-DOCKER_USERNAME="peterreisnyman"  
+DOCKER_USERNAME="${DOCKER_USERNAME}"
 
 # Color definitions
 RED='\033[0;31m'
@@ -154,10 +154,10 @@ services:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: Avenues1
-      MYSQL_DATABASE: lead_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -184,8 +184,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
-      - OPENAI_API_KEY=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
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};AllowZeroDateTime=True;ConvertZeroDateTime=True
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       mysql:
         condition: service_healthy
@@ -202,8 +202,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
-      - OPENAI_API_KEY=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
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};AllowZeroDateTime=True;ConvertZeroDateTime=True
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       mysql:
         condition: service_healthy
@@ -220,8 +220,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=lead_db;user=user;password=password;AllowZeroDateTime=True;ConvertZeroDateTime=True
-      - UserDataPassword=ChangeThisPassword
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};AllowZeroDateTime=True;ConvertZeroDateTime=True
+      - UserDataPassword=${USER_DATA_PASSWORD}
     depends_on:
       mysql:
         condition: service_healthy
@@ -237,9 +237,9 @@ services:
       - "5002:5002"
     environment:
       - DB_HOST=mysql
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=lead_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
       - FACEBOOK_API_URL=http://host.docker.internal:5001
     depends_on:
       - mysql
@@ -258,11 +258,11 @@ services:
       - "3001:3001"
     environment:
       - DB_HOST=mysql
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=lead_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
       - PORT=3001
-      - OPENAI_API_KEY=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
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - mysql
       - messenger
@@ -299,14 +299,14 @@ services:
       - "3000:3000"
     environment:
       - DB_HOST=mysql
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=lead_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
       - PORT=3000
-      - TWILIO_ACCOUNT_SID=ACaf72e29a13e9e2a9d92403d1484969c8
-      - TWILIO_AUTH_TOKEN=9e3e4c4959e312b08e913ad7491d0160
-      - TWILIO_PHONE_NUMBER=+12096712613
-      - OPENAI_API_KEY=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
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - mysql
     networks:
@@ -332,14 +332,14 @@ cat > /tmp/mysql-healthcheck.sh << 'EOF'
 # MySQL healthcheck script
 
 # Wait for MySQL to be ready
-if ! mysqladmin ping -h localhost -u root -pAvenues1 --silent; then
+if ! mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD} --silent; then
   echo "MySQL is not responding"
   exit 1
 fi
 
 # Check if we can query the database
-if ! mysql -h localhost -u root -pAvenues1 -e "USE lead_db; SELECT 1;" > /dev/null 2>&1; then
-  echo "Cannot query the lead_db database"
+if ! mysql -h localhost -u root -p${MYSQL_ROOT_PASSWORD} -e "USE ${DB_NAME}; SELECT 1;" > /dev/null 2>&1; then
+  echo "Cannot query the ${DB_NAME} database"
   exit 1
 fi
 
@@ -480,5 +480,5 @@ echo -e "${GREEN} - User Data Site: http://$SERVER_IP:5052${NC}"
 echo -e "\n${BLUE}Monitoring Commands:${NC}"
 echo -e "1. Check container status: ssh $SERVER_USER@$SERVER_IP 'cd /var/www/leadapp && docker-compose ps'"
 echo -e "2. View container logs: ssh $SERVER_USER@$SERVER_IP 'cd /var/www/leadapp && docker-compose logs -f [service_name]'"
-echo -e "3. Check MySQL status: ssh $SERVER_USER@$SERVER_IP 'cd /var/www/leadapp && docker-compose exec mysql mysqladmin -u root -pAvenues1 status'"
-echo -e "4. Backup database: ssh $SERVER_USER@$SERVER_IP 'cd /var/www/leadapp && docker-compose exec mysql mysqldump -u root -pAvenues1 lead_db > /var/www/leadapp/backup-\$(date +%Y%m%d).sql'"
+echo -e "3. Check MySQL status: ssh $SERVER_USER@$SERVER_IP 'cd /var/www/leadapp && docker-compose exec mysql mysqladmin -u root -p$MYSQL_ROOT_PASSWORD status'"
+echo -e "4. Backup database: ssh $SERVER_USER@$SERVER_IP 'cd /var/www/leadapp && docker-compose exec mysql mysqldump -u root -p$MYSQL_ROOT_PASSWORD $DB_NAME > /var/www/leadapp/backup-\$(date +%Y%m%d).sql'"

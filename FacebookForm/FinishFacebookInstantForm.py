@@ -2,6 +2,7 @@ import requests
 import json
 import uuid
 import random
+import os
 from faker import Faker
 
 class FinishFacebookInstantForm:
@@ -44,7 +45,7 @@ class FinishFacebookInstantForm:
         
         # --- SEND THE ENTIRE lead_data OBJECT ---
         # Ensure this points to your SERVER's intermediary service
-        webhook_url = "http://142.93.178.215:5002/webhook"
+        webhook_url = os.getenv("WEBHOOK_URL", "http://localhost:5002/webhook")
         payload = self.lead_data # Send the full data object
 
         try:
